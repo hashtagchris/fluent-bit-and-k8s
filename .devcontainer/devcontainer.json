@@ -1,0 +1,67 @@
+{
+  "name": "K3s Development Environment",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
+
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "dockerDashComposeVersion": "v2"
+    },
+    "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {
+      "version": "latest",
+      "helm": "latest",
+      "minikube": "none"
+    }
+  },
+
+  "privileged": true,
+  "init": true,
+
+  "mounts": [
+    "source=/var/run/docker.sock,target=/var/run/docker-host.sock,type=bind",
+    "source=k3s-server-data,target=/var/lib/rancher/k3s,type=volume"
+  ],
+
+  "postCreateCommand": ".devcontainer/setup-k3s.sh",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        "redhat.vscode-yaml",
+        "ms-vscode.vscode-json"
+      ],
+      "settings": {
+        "kubernetes-tools.kubectl-path.linux": "/usr/local/bin/kubectl"
+      }
+    }
+  },
+
+  "forwardPorts": [
+    6443,
+    8080,
+    30000,
+    30001,
+    30002,
+    30003,
+    30004,
+    30005
+  ],
+
+  "portsAttributes": {
+    "6443": {
+      "label": "Kubernetes API Server",
+      "onAutoForward": "silent"
+    },
+    "8080": {
+      "label": "HTTP Service",
+      "onAutoForward": "silent"
+    },
+    "30000": {
+      "label": "NodePort 30000",
+      "onAutoForward": "silent"
+    }
+  },
+
+  "remoteUser": "vscode"
+}

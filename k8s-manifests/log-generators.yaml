@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: high-volume-logger
+  namespace: default
+  labels:
+    app: high-volume-logger
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: high-volume-logger
+  template:
+    metadata:
+      labels:
+        app: high-volume-logger
+    spec:
+      containers:
+      - name: logger
+        image: alpine:latest
+        command: ["/bin/sh"]
+        args:
+          - -c
+          - |
+            while true; do
+              echo "$(date) - High volume log message from pod $HOSTNAME - Event ID: $RANDOM"
+              echo "$(date) - JSON: {\"timestamp\":\"$(date -Iseconds)\",\"hostname\":\"$HOSTNAME\",\"message\":\"High volume test message\",\"event_id\":$RANDOM,\"level\":\"info\"}"
+              echo "$(date) - ERROR: Simulated error message for testing - Event ID: $RANDOM" >&2
+              sleep 0.1
+            done
+        env:
+        - name: HOSTNAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        resources:
+          requests:
+            cpu: 50m
+            memory: 32Mi
+          limits:
+            cpu: 100m
+            memory: 64Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: burst-logger
+  namespace: default
+  labels:
+    app: burst-logger
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: burst-logger
+  template:
+    metadata:
+      labels:
+        app: burst-logger
+    spec:
+      containers:
+      - name: burst-logger
+        image: alpine:latest
+        command: ["/bin/sh"]
+        args:
+          - -c
+          - |
+            while true; do
+              echo "Burst period starting..."
+              for i in $(seq 1 100); do
+                echo "$(date) - Burst log $i from $HOSTNAME - Data: $(head -c 200 /dev/urandom | base64 | tr -d '\n')"
+              done
+              echo "Burst period complete, sleeping..."
+              sleep 10
+            done
+        env:
+        - name: HOSTNAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        resources:
+          requests:
+            cpu: 50m
+            memory: 32Mi
+          limits:
+            cpu: 100m
+            memory: 64Mi
