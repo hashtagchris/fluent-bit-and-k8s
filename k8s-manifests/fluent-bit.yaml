@@ -94,10 +94,10 @@ spec:
           mountPath: /fluent-bit/logs/
         resources:
           requests:
-            cpu: 100m
+            cpu: 10m
             memory: 128Mi
           limits:
-            cpu: 200m
+            cpu: 20m
             memory: 256Mi
       volumes:
       - name: varlog
