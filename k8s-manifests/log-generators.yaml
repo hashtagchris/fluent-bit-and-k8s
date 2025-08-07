@@ -6,7 +6,7 @@ metadata:
   labels:
     app: high-volume-logger
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: high-volume-logger
@@ -49,7 +49,7 @@ metadata:
   labels:
     app: burst-logger
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: burst-logger
