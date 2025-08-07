@@ -68,9 +68,6 @@ This project includes a fully configured devcontainer that runs a K3s Kubernetes
 ### High Volume Continuous Logging
 The `high-volume-logger` deployment generates continuous log streams to test Fluent Bit's handling of sustained high-volume logging.
 
-### Burst Logging
-The `burst-logger` deployment creates periodic bursts of log messages to test Fluent Bit's buffer management and backpressure handling.
-
 ### Custom Testing
 Modify the log generators in `k8s-manifests/log-generators.yaml` to test specific scenarios:
 - Different log formats (JSON, plain text, structured)
