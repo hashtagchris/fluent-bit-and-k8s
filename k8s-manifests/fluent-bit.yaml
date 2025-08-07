@@ -44,9 +44,11 @@ data:
         Labels              On
 
     [OUTPUT]
-        Name  stdout
+        Name  file
         Match *
-        Format json_lines
+        Path  /fluent-bit/logs/
+        File  processed-logs.log
+        Format plain
 
   parsers.conf: |
     [PARSER]
@@ -88,6 +90,8 @@ spec:
           readOnly: true
         - name: fluent-bit-config
           mountPath: /fluent-bit/etc/
+        - name: fluent-bit-logs
+          mountPath: /fluent-bit/logs/
         resources:
           requests:
             cpu: 100m
@@ -105,6 +109,10 @@ spec:
       - name: fluent-bit-config
         configMap:
           name: fluent-bit-config
+      - name: fluent-bit-logs
+        hostPath:
+          path: /var/fluent-bit-logs
+          type: DirectoryOrCreate
       tolerations:
       - effect: NoSchedule
         operator: Exists
