@@ -28,6 +28,7 @@ data:
         Mem_Buf_Limit     50MB
         Skip_Long_Lines   On
         Skip_Empty_Lines  On
+        Threaded          True
 
     [FILTER]
         Name                kubernetes
@@ -77,7 +78,7 @@ spec:
       serviceAccountName: fluent-bit
       containers:
       - name: fluent-bit
-        image: fluent/fluent-bit:3.0.4
+        image: fluent/fluent-bit:3.2.2
         ports:
         - containerPort: 2020
           name: http
