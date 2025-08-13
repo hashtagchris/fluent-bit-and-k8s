@@ -21,13 +21,14 @@ data:
 
     [INPUT]
         Name              tail
-        Path              /var/log/containers/high-volume-logger-*.log
+        Path              /var/log/pods/default_high-volume-logger-*/logger/*log*.gz
         Parser            cri
         Tag               kube.*
         Refresh_Interval  5
         Mem_Buf_Limit     50MB
         Skip_Long_Lines   On
         Skip_Empty_Lines  On
+        Threaded          True
 
     [FILTER]
         Name                kubernetes
@@ -77,7 +78,7 @@ spec:
       serviceAccountName: fluent-bit
       containers:
       - name: fluent-bit
-        image: fluent/fluent-bit:3.0.4
+        image: fluent/fluent-bit:3.2.2
         ports:
         - containerPort: 2020
           name: http
@@ -94,10 +95,10 @@ spec:
           mountPath: /fluent-bit/logs/
         resources:
           requests:
-            cpu: 10m
+            cpu: 6000m
             memory: 128Mi
           limits:
-            cpu: 20m
+            cpu: 10000m
             memory: 256Mi
       volumes:
       - name: varlog
