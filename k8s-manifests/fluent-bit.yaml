@@ -21,7 +21,7 @@ data:
 
     [INPUT]
         Name              tail
-        Path              /var/log/containers/high-volume-logger-*.log
+        Path              /var/log/pods/default_high-volume-logger-*/logger/*log*.gz
         Parser            cri
         Tag               kube.*
         Refresh_Interval  5
