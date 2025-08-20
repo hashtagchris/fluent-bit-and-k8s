@@ -42,6 +42,7 @@ data:
         K8S-Logging.Exclude Off
         Annotations         Off
         Labels              On
+        Kube_meta_preload_cache_dir /fluent-bit/kube-meta-preload
 
     [OUTPUT]
         Name  file
@@ -92,6 +93,8 @@ spec:
           mountPath: /fluent-bit/etc/
         - name: fluent-bit-logs
           mountPath: /fluent-bit/logs/
+        - name: cache-dir
+          mountPath: /fluent-bit/kube-meta-preload/
         resources:
           requests:
             cpu: 10m
@@ -112,6 +115,10 @@ spec:
       - name: fluent-bit-logs
         hostPath:
           path: /var/fluent-bit-logs
+          type: DirectoryOrCreate
+      - name: cache-dir
+        hostPath:
+          path: /tmp/kube-meta-preload
           type: DirectoryOrCreate
       tolerations:
       - effect: NoSchedule
