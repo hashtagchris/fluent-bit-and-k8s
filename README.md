@@ -67,6 +67,24 @@ Edit `k8s-manifests/log-generators.yaml`, followed by:
 kubectl apply -f k8s-manifests/log-generators.yaml && kubectl rollout restart deployment/high-volume-logger -n default
 ```
 
+## Comparing k8s logs and fluent-bit output
+
+```
+sudo su -
+cd /var/log/pods/default_high-volume-logger-*/logger
+head -n 1 $(find . -name '0.log.20250823-[0-9][0-9][0-9][0-9][0-9][0-9]') | cut -c1-70; tail -n 1 $(find . -name '0.log.20250823-[0-9][0-9][0-9][0-9][0-9][0-9]') | cut -c1-70
+
+# check for log loss in the recently logged sequence range
+grep '"1-45"' /var/fluent-bit-logs/processed-logs.log | wc -l
+grep '"1-46"' /var/fluent-bit-logs/processed-logs.log | wc -l
+...
+grep '"1-52"' /var/fluent-bit-logs/processed-logs.log | wc -l
+
+# Or count distinct lines
+# This may show a processing rate of roughly 330 msg/sec
+cat /var/fluent-bit-logs/processed-logs.log | sort | uniq -c | tail -n 40
+```
+
 ## Project Structure
 
 ```
