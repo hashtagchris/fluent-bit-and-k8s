@@ -39,7 +39,7 @@ data:
                 kube_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
                 kube_tag_prefix: kube.var.log.containers.
                 merge_log: true
-                merge_log_key: log_processed
+                keep_log: false
                 k8s-logging.parser: true
                 k8s-logging.exclude: true
                 annotations: false
@@ -52,6 +52,7 @@ data:
                 call: process_record
 
       outputs:
+        # run tail -f /var/fluent-bit-logs/processed-logs.log on the host
         - name: file
           match: "*"
           path: /fluent-bit/logs/
@@ -73,7 +74,12 @@ data:
 
   process_logs.lua: |
     function process_record(tag, timestamp, record)
-        -- Verify the log line is being parsed
+        -- -- Verify the log line is being parsed
+        -- -- Print all keys in the record
+        -- print("Record keys:")
+        -- for key, _ in pairs(record) do
+        --     print("  - " .. key)
+        -- end
         print(record.seq2)
 
         -- Add a custom field with processing timestamp
