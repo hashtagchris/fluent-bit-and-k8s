@@ -75,12 +75,14 @@ data:
   process_logs.lua: |
     function process_record(tag, timestamp, record)
         -- Verify the log line was parsed
-        -- print(record.seq2)
+        -- print(record.seq)
 
-        -- Remove any key-value pair not starting with "seq"
-        for key, _ in pairs(record) do
-          if string.sub(key, 1, 3) ~= "seq" then
-              record[key] = nil
+        -- if seq is set, remove all other keys
+        if record.seq then
+          for key, _ in pairs(record) do
+            if key ~= "seq" then
+                record[key] = nil
+            end
           end
         end
 
