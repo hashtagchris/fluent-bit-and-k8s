@@ -74,25 +74,14 @@ data:
 
   process_logs.lua: |
     function process_record(tag, timestamp, record)
+        -- Verify the log line was parsed
         -- print(record.seq2)
 
-        -- -- Verify the log line is being parsed
-        -- -- Print all keys in the record
-        -- print("Record keys:")
-        -- for key, _ in pairs(record) do
-        --     print("  - " .. key)
-        -- end
-
-
-        -- Add a custom field with processing timestamp
-        record["processed_at"] = os.date("!%Y-%m-%dT%H:%M:%SZ")
-
-        -- Add a custom field indicating the record was processed by Lua
-        record["lua_processed"] = true
-
-        -- Convert log level to uppercase if it exists
-        if record["level"] then
-            record["level"] = string.upper(record["level"])
+        -- Remove any key-value pair not starting with "seq"
+        for key, _ in pairs(record) do
+          if string.sub(key, 1, 3) ~= "seq" then
+              record[key] = nil
+          end
         end
 
         return 1, timestamp, record
