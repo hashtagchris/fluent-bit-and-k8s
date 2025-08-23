@@ -28,7 +28,7 @@ data:
         Mem_Buf_Limit     50MB
         Skip_Long_Lines   On
         Skip_Empty_Lines  On
-        processors        kube_processor
+        processors        kube_processor,lua_processor
 
     [PROCESSOR]
         Name                kubernetes
@@ -45,6 +45,12 @@ data:
         Labels              On
         Kube_meta_preload_cache_dir /fluent-bit/kube-meta-preload
 
+    [PROCESSOR]
+        Name            lua
+        processor_alias lua_processor
+        script          /fluent-bit/scripts/process_logs.lua
+        call            process_record
+
     [OUTPUT]
         Name  file
         Match *
@@ -59,6 +65,24 @@ data:
         Regex       ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>[^ ]*) (?<message>.*)$
         Time_Key    time
         Time_Format %Y-%m-%dT%H:%M:%S.%L%z
+  process_logs.lua: |
+    function process_record(tag, timestamp, record)
+        -- Verify the log line is being parsed
+        print(record.seq2)
+
+        -- Add a custom field with processing timestamp
+        record["processed_at"] = os.date("!%Y-%m-%dT%H:%M:%SZ")
+
+        -- Add a custom field indicating the record was processed by Lua
+        record["lua_processed"] = true
+
+        -- Convert log level to uppercase if it exists
+        if record["level"] then
+            record["level"] = string.upper(record["level"])
+        end
+
+        return 1, timestamp, record
+    end
 ---
 apiVersion: apps/v1
 kind: DaemonSet
