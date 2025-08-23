@@ -12,7 +12,7 @@ data:
   fluent-bit.yaml: |
     service:
       flush: 5
-      log_level: info
+      log_level: debug
       daemon: off
       parsers_file: parsers.conf
       http_server: true

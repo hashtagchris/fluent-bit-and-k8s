@@ -50,12 +50,21 @@ This project includes a fully configured devcontainer that runs a K3s Kubernetes
    kubectl logs -f deployment/high-volume-logger
    ```
 
-## Iterating on the fluent-bit config
+## Quickly iterating
+### fluent-bit config
 
 Edit `k8s-manifests/fluent-bit.yaml`, followed by:
 
 ```
-kubectl apply -f /workspaces/fluent-bit-and-k8s/k8s-manifests/fluent-bit.yaml && kubectl rollout restart daemonset/fluent-bit -n logging && kubectl rollout status daemonset/fluent-bit -n logging && kubectl logs -n logging -l app=fluent-bit -f
+kubectl apply -f k8s-manifests/fluent-bit.yaml && kubectl rollout restart daemonset/fluent-bit -n logging && kubectl rollout status daemonset/fluent-bit -n logging && kubectl logs -n logging -l app=fluent-bit -f
+```
+
+### log generators
+
+Edit `k8s-manifests/log-generators.yaml`, followed by:
+
+```
+kubectl apply -f k8s-manifests/log-generators.yaml && kubectl rollout restart deployment/high-volume-logger -n default
 ```
 
 ## Project Structure
