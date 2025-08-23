@@ -74,13 +74,15 @@ data:
 
   process_logs.lua: |
     function process_record(tag, timestamp, record)
+        -- print(record.seq2)
+
         -- -- Verify the log line is being parsed
         -- -- Print all keys in the record
         -- print("Record keys:")
         -- for key, _ in pairs(record) do
         --     print("  - " .. key)
         -- end
-        print(record.seq2)
+
 
         -- Add a custom field with processing timestamp
         record["processed_at"] = os.date("!%Y-%m-%dT%H:%M:%SZ")
