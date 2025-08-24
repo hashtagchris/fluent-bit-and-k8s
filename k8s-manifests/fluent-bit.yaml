@@ -73,17 +73,29 @@ data:
         Format logfmt
 
   process_logs.lua: |
+    local lastSeq = ""
+    local lastSeqCount = 0
+
     function process_record(tag, timestamp, record)
         -- Verify the log line was parsed
         -- print(record.seq)
 
-        -- if seq is set, remove all other keys
         if record.seq then
+          -- remove all other keys
           for key, _ in pairs(record) do
             if key ~= "seq" then
                 record[key] = nil
             end
           end
+
+          if record.seq == lastSeq then
+            lastSeqCount = lastSeqCount + 1
+          else
+            print("seq end: ", lastSeq, " count: ", lastSeqCount)
+            lastSeq = record.seq
+            lastSeqCount = 1
+          end
+          -- print("seq: ", record.seq)
         end
 
         return 1, timestamp, record
