@@ -37,7 +37,7 @@ This project includes a fully configured devcontainer that runs a K3s Kubernetes
    kubectl apply -f k8s-manifests/log-generators.yaml
    ```
 
-6. **Monitor Logs**
+6. **Monitor Pod Logs**
    ```bash
    # Check Fluent Bit status
    kubectl get pods -n logging
@@ -48,6 +48,19 @@ This project includes a fully configured devcontainer that runs a K3s Kubernetes
    # Check log generators
    kubectl get pods
    kubectl logs -f deployment/high-volume-logger
+   ```
+
+7. **Monitor Fluent Bit Output**
+
+`fluent-bit.yaml` specifies a [`file`](https://docs.fluentbit.io/manual/data-pipeline/outputs/file) output.
+
+   ```bash
+   # tail fluent bit's output
+   tail -f /var/fluent-bit-logs/processed-logs.log
+
+   # check for log loss
+   # every sequence number should show up 1,000 times
+   cat /var/fluent-bit-logs/processed-logs.log | sort | uniq -c | tail -n 40
    ```
 
 ## Quickly iterating
@@ -81,7 +94,7 @@ grep '"1-46"' /var/fluent-bit-logs/processed-logs.log | wc -l
 grep '"1-52"' /var/fluent-bit-logs/processed-logs.log | wc -l
 
 # Or count distinct lines
-# This may show a processing rate of roughly 330 msg/sec
+# This may show a processing rate of roughly 300 msg/sec
 cat /var/fluent-bit-logs/processed-logs.log | sort | uniq -c | tail -n 40
 ```
 
