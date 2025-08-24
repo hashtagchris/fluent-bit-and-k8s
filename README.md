@@ -28,40 +28,40 @@ This project includes a fully configured devcontainer that runs a K3s Kubernetes
    ```
 
 4. **Deploy Fluent Bit**
-   ```bash
-   kubectl apply -f k8s-manifests/fluent-bit.yaml
-   ```
+```bash
+kubectl apply -f k8s-manifests/fluent-bit.yaml
+```
 
 5. **Create High-Volume Test Workloads**
-   ```bash
-   kubectl apply -f k8s-manifests/log-generators.yaml
-   ```
+```bash
+kubectl apply -f k8s-manifests/log-generators.yaml
+```
 
 6. **Monitor Pod Logs**
-   ```bash
-   # Check Fluent Bit status
-   kubectl get pods -n logging
+```bash
+# Check Fluent Bit status
+kubectl get pods -n logging
 
-   # View Fluent Bit logs
-   kubectl logs -n logging -l app=fluent-bit -f
+# View Fluent Bit logs
+kubectl logs -n logging -l app=fluent-bit -f
 
-   # Check log generators
-   kubectl get pods
-   kubectl logs -f deployment/high-volume-logger
-   ```
+# Check log generators
+kubectl get pods
+kubectl logs -f deployment/high-volume-logger
+```
 
 7. **Monitor Fluent Bit Output**
 
 `fluent-bit.yaml` specifies a [`file`](https://docs.fluentbit.io/manual/data-pipeline/outputs/file) output.
 
-   ```bash
-   # tail fluent bit's output
-   tail -f /var/fluent-bit-logs/processed-logs.log
+```bash
+# tail fluent bit's output
+tail -f /var/fluent-bit-logs/processed-logs.log
 
-   # check for log loss
-   # every sequence number should show up 1,000 times
-   cat /var/fluent-bit-logs/processed-logs.log | sort | uniq -c | tail -n 40
-   ```
+# check for log loss
+# every sequence number should show up 1,000 times
+cat /var/fluent-bit-logs/processed-logs.log | sort | uniq -c | tail -n 40
+```
 
 ## Quickly iterating
 ### fluent-bit config
