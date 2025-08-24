@@ -29,6 +29,7 @@ data:
           mem_buf_limit: 50MB
           skip_long_lines: true
           skip_empty_lines: true
+          threaded: true
 
           processors:
             logs:
