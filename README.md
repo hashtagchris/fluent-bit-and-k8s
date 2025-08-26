@@ -1,5 +1,66 @@
 # fluent-bit-and-k8s
-Test out how fluent-bit handles a very high volume service running in kubernetes
+Test out how Fluent Bit handles a very high volume service running in kubernetes
+
+## Reproducing Log Loss
+To reproduce Fluent Bit dropping log segments at high k8s logging rates, run [Getting Started](#getting-started) steps 1-3 below, then run `./start-pods-and-monitor-for-log-loss.sh` in the terminal.
+
+### Expected Output
+This is what you would see if there was no log loss - log sequence numbers incrementing by 1, with each sequence number being logged 1,000 times.
+
+```
+[Tue Aug 26 11:01:25 PM UTC 2025] Count of processed log sequences...
+   1000 {"seq":"01017"}
+   1000 {"seq":"01018"}
+   1000 {"seq":"01019"}
+   1000 {"seq":"01020"}
+   1000 {"seq":"01021"}
+   1000 {"seq":"01022"}
+   1000 {"seq":"01023"}
+   1000 {"seq":"01024"}
+   1000 {"seq":"01025"}
+   1000 {"seq":"01026"}
+   1000 {"seq":"01027"}
+   1000 {"seq":"01028"}
+   1000 {"seq":"01029"}
+   1000 {"seq":"01030"}
+   1000 {"seq":"01031"}
+   1000 {"seq":"01032"}
+   1000 {"seq":"01033"}
+   1000 {"seq":"01034"}
+    810 {"seq":"01035"}
+
+[Tue Aug 26 11:01:30 PM UTC 2025] Count of processed log sequences...
+...
+```
+
+### Actual Output
+There are gaps in the sequence number range, and only some sequence numbers were logged 1,000 times.
+
+```
+[Tue Aug 26 11:08:05 PM UTC 2025] Count of processed log sequences...
+   1000 {"seq":"01163"}
+    575 {"seq":"01164"}
+   1000 {"seq":"01171"}
+    440 {"seq":"01172"}
+   1000 {"seq":"01179"}
+    530 {"seq":"01180"}
+   1000 {"seq":"01187"}
+    440 {"seq":"01188"}
+   1000 {"seq":"01195"}
+    425 {"seq":"01196"}
+   1000 {"seq":"01203"}
+   1000 {"seq":"01204"}
+     10 {"seq":"01205"}
+    337 {"seq":"01211"}
+   1000 {"seq":"01212"}
+     13 {"seq":"01213"}
+   1000 {"seq":"01220"}
+    185 {"seq":"01221"}
+    600 {"seq":"01228"}
+
+[Tue Aug 26 11:08:10 PM UTC 2025] Count of processed log sequences...
+...
+```
 
 ## Quick Start with Devcontainer
 
