@@ -62,6 +62,8 @@ There are gaps in the sequence number range, and only some sequence numbers were
 ...
 ```
 
+`kubectl logs -n logging -l app=fluent-bit -f | grep purge` shows `[debug] [input:tail:tail.0] purge: monitored file has been deleted` is logged every 10 seconds. 10 seconds aligns with log rotation & deletion.
+
 ## Quick Start with Devcontainer
 
 This project includes a fully configured devcontainer that runs a K3s Kubernetes cluster, perfect for testing Fluent Bit configurations.
