@@ -29,6 +29,7 @@ data:
           mem_buf_limit: 50MB
           skip_long_lines: true
           skip_empty_lines: true
+          read_from_head: true # avoid reading half a log line
           threaded: true
 
           processors:
@@ -80,15 +81,7 @@ data:
     function process_record(tag, timestamp, record)
         -- Verify the log line was parsed
         -- print(record.seq)
-
         if record.seq then
-          -- remove all other keys
-          for key, _ in pairs(record) do
-            if key ~= "seq" then
-                record[key] = nil
-            end
-          end
-
           if record.seq == lastSeq then
             lastSeqCount = lastSeqCount + 1
           else
@@ -97,6 +90,15 @@ data:
             lastSeqCount = 1
           end
           -- print("seq: ", record.seq)
+        else
+          record.seq = "-1"
+        end
+
+        -- remove all keys other than seq
+        for key, _ in pairs(record) do
+          if key ~= "seq" then
+              record[key] = nil
+          end
         end
 
         return 1, timestamp, record
